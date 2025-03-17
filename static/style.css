@@ -1,0 +1,82 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: none;
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 15px 20px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.table th {
+  font-weight: 600;
+  color: #495057;
+}
+
+.status-critical td {
+  background-color: rgba(255, 0, 0, 0.05);
+}
+
+.status-warning td {
+  background-color: rgba(255, 193, 7, 0.05);
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+#chartContainer {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#salesChart {
+  max-width: 100%;
+  height: auto;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+  margin: 2rem auto;
+}
+
+.period-btn.active {
+  background-color: #0d6efd;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .card-header h5 {
+    font-size: 1rem;
+  }
+
+  .table {
+    font-size: 0.9rem;
+  }
+}
+

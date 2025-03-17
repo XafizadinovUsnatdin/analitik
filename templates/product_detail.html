@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Mahsulotlar Savdosi Bashorati</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Mahsulotlar Savdosi Bashorati</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('orders') }}">Buyurtmalar</a>
+                    </li>
+                    {% if not is_premium %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('premium') }}">Premium</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ current_user.username }}
+                            {% if is_premium %}
+                            <span class="badge bg-warning text-dark">Premium</span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">Chiqish</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h1>{{ product.name }}</h1>
+            </div>
+            <div class="col-md-6 text-end">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Orqaga</a>
+                <a href="{{ url_for('calculate_product_orders', product_id=product.id) }}" class="btn btn-primary">Buyurtmalarni hisoblash</a>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Mahsulot ma'lumotlari</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <th>ID:</th>
+                                <td>{{ product.id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nomi:</th>
+                                <td>{{ product.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Kategoriya:</th>
+                                <td>{{ product.category }}</td>
+                            </tr>
+                            <tr>
+                                <th>O'lchov birligi:</th>
+                                <td>{{ product.unit }}</td>
+                            </tr>
+                            <tr>
+                                <th>Saqlash muddati:</th>
+                                <td>{{ product.shelf_life_days }} kun</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Ombor ma'lumotlari</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <th>Mavjud miqdor:</th>
+                                <td>{{ stock.stock }}</td>
+                            </tr>
+                            <tr>
+                                <th>Qolgan kunlar:</th>
+                                <td>{{ stock.days_to_cover }}</td>
+                            </tr>
+                            <tr>
+                                <th>Holat:</th>
+                                <td>
+                                    {% if stock.days_to_cover <= 3 %}
+                                        <span class="badge bg-danger">Kritik</span>
+                                    {% elif stock.days_to_cover <= 7 %}
+                                        <span class="badge bg-warning text-dark">Ogohlantirish</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Normal</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Buyurtma sozlamalari</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ url_for('update_order_settings') }}" method="POST">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <div class="mb-3">
+                                <label for="days_to_maintain" class="form-label">Qancha kunga yetadigan zaxira saqlash</label>
+                                <input type="number" class="form-control" id="days_to_maintain" name="days_to_maintain" value="{{ order_settings.days_to_maintain }}" min="1" max="90">
+                                <div class="form-text">Omborda kamida shu kunlarga yetadigan mahsulot bo'lishi kerak</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="min_order_quantity" class="form-label">Minimal buyurtma miqdori</label>
+                                <input type="number" class="form-control" id="min_order_quantity" name="min_order_quantity" value="{{ order_settings.min_order_quantity }}" min="1" step="0.1">
+                                <div class="form-text">Buyurtma berilganda kamida shu miqdorda buyurtma beriladi</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5>Savdo tarixi va bashorat</h5>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-primary btn-sm period-btn" data-period="week">Hafta</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm period-btn" data-period="month">Oy</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm period-btn" data-period="quarter">Chorak</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm period-btn active" data-period="all">Hammasi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="chartContainer">
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Yuklanmoqda...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Bashorat ma'lumotlari</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Sana</th>
+                                        <th>Bashorat qilingan miqdor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="forecastTable">
+                                    <tr>
+                                        <td colspan="2" class="text-center">Ma'lumotlar yuklanmoqda...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if is_premium %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Tavsiya etilgan buyurtmalar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Sana</th>
+                                        <th>Miqdor</th>
+                                        <th>Qamrab olinadigan kunlar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ordersTable">
+                                    <tr>
+                                        <td colspan="3" class="text-center">Ma'lumotlar yuklanmoqda...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="card mt-4 bg-light">
+                    <div class="card-body text-center">
+                        <h5>Tavsiya etilgan buyurtmalar</h5>
+                        <p>Bu funksiya faqat premium foydalanuvchilar uchun mavjud</p>
+                        <a href="{{ url_for('premium') }}" class="btn btn-warning">Premium ga o'tish</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProductData('all');
+            
+            document.querySelectorAll('.period-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    loadProductData(this.dataset.period);
+                });
+            });
+        });
+        
+        function loadProductData(period) {
+            const chartContainer = document.getElementById('chartContainer');
+            const forecastTable = document.getElementById('forecastTable');
+            const ordersTable = document.getElementById('ordersTable');
+            
+            chartContainer.innerHTML = `
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Yuklanmoqda...</span>
+                    </div>
+                </div>
+            `;
+            
+            forecastTable.innerHTML = `
+                <tr>
+                    <td colspan="2" class="text-center">Ma'lumotlar yuklanmoqda...</td>
+                </tr>
+            `;
+            
+            if (ordersTable) {
+                ordersTable.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center">Ma'lumotlar yuklanmoqda...</td>
+                    </tr>
+                `;
+            }
+            
+            fetch(`/api/product/{{ product.id }}?period=${period}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Display chart
+                    chartContainer.innerHTML = `<img id="salesChart" class="img-fluid" src="data:image/png;base64,${data.plot}" alt="Savdo grafigi">`;
+                    
+                    // Fill forecast table
+                    forecastTable.innerHTML = '';
+                    
+                    data.forecast_data.forEach(item => {
+                        const row = document.createElement('tr');
+                        
+                        const dateCell = document.createElement('td');
+                        dateCell.textContent = formatDate(item.date);
+                        row.appendChild(dateCell);
+                        
+                        const quantityCell = document.createElement('td');
+                        quantityCell.textContent = item.predicted_quantity.toFixed(2);
+                        row.appendChild(quantityCell);
+                        
+                        forecastTable.appendChild(row);
+                    });
+                    
+                    // Fill orders table if premium
+                    if (ordersTable && data.orders) {
+                        ordersTable.innerHTML = '';
+                        
+                        if (data.orders.length === 0) {
+                            const row = document.createElement('tr');
+                            const cell = document.createElement('td');
+                            cell.colSpan = 3;
+                            cell.textContent = 'Buyurtmalar topilmadi';
+                            cell.className = 'text-center';
+                            row.appendChild(cell);
+                            ordersTable.appendChild(row);
+                        } else {
+                            data.orders.forEach(order => {
+                                const row = document.createElement('tr');
+                                
+                                const dateCell = document.createElement('td');
+                                dateCell.textContent = formatDate(order.suggested_date);
+                                row.appendChild(dateCell);
+                                
+                                const quantityCell = document.createElement('td');
+                                quantityCell.textContent = order.quantity.toFixed(2);
+                                row.appendChild(quantityCell);
+                                
+                                const daysCell = document.createElement('td');
+                                daysCell.textContent = order.days_covered;
+                                row.appendChild(daysCell);
+                                
+                                ordersTable.appendChild(row);
+                            });
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    chartContainer.innerHTML = '<div class="alert alert-danger">Ma\'lumotlarni yuklashda xatolik yuz berdi</div>';
+                    forecastTable.innerHTML = '<tr><td colspan="2" class="text-center">Ma\'lumotlarni yuklashda xatolik yuz berdi</td></tr>';
+                    if (ordersTable) {
+                        ordersTable.innerHTML = '<tr><td colspan="3" class="text-center">Ma\'lumotlarni yuklashda xatolik yuz berdi</td></tr>';
+                    }
+                });
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('uz-UZ');
+        }
+    </script>
+</body>
+</html>
+

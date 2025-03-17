@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyurtmalar - Mahsulotlar Savdosi Bashorati</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Mahsulotlar Savdosi Bashorati</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('orders') }}">Buyurtmalar</a>
+                    </li>
+                    {% if not is_premium %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('premium') }}">Premium</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ current_user.username }}
+                            {% if is_premium %}
+                            <span class="badge bg-warning text-dark">Premium</span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">Chiqish</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h1>Buyurtmalar</h1>
+            </div>
+        </div>
+        
+        {% if is_premium %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Buyurtmalar ro'yxati</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Qidirish...">
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Mahsulot</th>
+                                <th>Miqdor</th>
+                                <th>Tavsiya etilgan sana</th>
+                                <th>Status</th>
+                                <th>Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if orders %}
+                                {% for order in orders %}
+                                <tr>
+                                    <td>{{ order.id }}</td>
+                                    <td>
+                                        {% for product in products %}
+                                            {% if product.id == order.product_id %}
+                                                {{ product.name }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ order.quantity }}</td>
+                                    <td>{{ order.suggested_date.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        {% if order.status == 'pending' %}
+                                            <span class="badge bg-warning text-dark">Kutilmoqda</span>
+                                        {% elif order.status == 'completed' %}
+                                            <span class="badge bg-success">Bajarildi</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Bekor qilindi</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if order.status == 'pending' %}
+                                            <a href="{{ url_for('update_order_status', order_id=order.id, status='completed') }}" class="btn btn-sm btn-success">Bajarildi</a>
+                                            <a href="{{ url_for('update_order_status', order_id=order.id, status='cancelled') }}" class="btn btn-sm btn-danger">Bekor qilish</a>
+                                        {% else %}
+                                            <a href="{{ url_for('update_order_status', order_id=order.id, status='pending') }}" class="btn btn-sm btn-secondary">Qayta tiklash</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center">Buyurtmalar mavjud emas</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Mahsulotlar bo'yicha buyurtmalarni hisoblash</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for product in products %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">Kategoriya: {{ product.category }}</p>
+                                <a href="{{ url_for('calculate_product_orders', product_id=product.id) }}" class="btn btn-primary">Buyurtmalarni hisoblash</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card bg-light">
+            <div class="card-body text-center py-5">
+                <h3>Bu funksiya faqat premium foydalanuvchilar uchun mavjud</h3>
+                <p class="mb-4">Premium obuna orqali siz buyurtmalarni avtomatik hisoblash va boshqarish imkoniyatiga ega bo'lasiz.</p>
+                <a href="{{ url_for('premium') }}" class="btn btn-warning">Premium ga o'tish</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('searchInput')?.addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchText) ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
+

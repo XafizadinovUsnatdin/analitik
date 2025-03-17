@@ -1,0 +1,51 @@
+id,name,category,unit
+1,Sut,Asosiy oziq-ovqatlar,pachka
+2,Non,Go‘sht mahsulotlari,kg
+3,Tuxum,Asosiy oziq-ovqatlar,dona
+4,Shakar,Mevalar,pachka
+5,Choy,Go‘sht mahsulotlari,dona
+6,Qahva,Asosiy oziq-ovqatlar,dona
+7,Guruch,Shirinliklar,kg
+8,Go'sht,Sut mahsulotlari,litr
+9,Baliq,Asosiy oziq-ovqatlar,pachka
+10,Piyoz,Sut mahsulotlari,dona
+11,Kartoshka,Sabzavotlar,dona
+12,Sabzi,Sut mahsulotlari,litr
+13,Pamidor,Mevalar,kg
+14,Bodring,Sut mahsulotlari,pachka
+15,Qalampir,Ichimliklar,kg
+16,Yog',Go‘sht mahsulotlari,litr
+17,Tuz,Mevalar,pachka
+18,Makaron,Go‘sht mahsulotlari,dona
+19,Un,Sut mahsulotlari,pachka
+20,Shokolad,Ichimliklar,dona
+21,Pechenye,Mevalar,dona
+22,Suv,Shirinliklar,kg
+23,Sharbat,Asosiy oziq-ovqatlar,litr
+24,Sirka,Sabzavotlar,kg
+25,Asal,Sabzavotlar,kg
+26,Sosiska,Mevalar,kg
+27,Kolbasa,Asosiy oziq-ovqatlar,litr
+28,Ketchup,Shirinliklar,kg
+29,Mayonez,Shirinliklar,dona
+30,Yogurt,Mevalar,dona
+31,Qatiq,Shirinliklar,kg
+32,Pishloq,Go‘sht mahsulotlari,litr
+33,Smorodina,Sut mahsulotlari,dona
+34,Anor,Asosiy oziq-ovqatlar,pachka
+35,Olma,Go‘sht mahsulotlari,dona
+36,Nok,Sut mahsulotlari,kg
+37,Shaftoli,Sut mahsulotlari,pachka
+38,Banan,Asosiy oziq-ovqatlar,litr
+39,Uzum,Ichimliklar,pachka
+40,Qulupnay,Shirinliklar,litr
+41,Gilos,Sut mahsulotlari,litr
+42,Olcha,Asosiy oziq-ovqatlar,dona
+43,Ko'k choy,Go‘sht mahsulotlari,litr
+44,Apelsin sharbati,Go‘sht mahsulotlari,pachka
+45,Limon,Shirinliklar,dona
+46,Mandarin,Asosiy oziq-ovqatlar,kg
+47,Tuxum,Sabzavotlar,litr
+48,Kakao,Sut mahsulotlari,litr
+49,Qaymoq,Sut mahsulotlari,dona
+50,Tvorog,Shirinliklar,pachka

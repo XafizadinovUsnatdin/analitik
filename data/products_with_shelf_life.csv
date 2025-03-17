@@ -1,0 +1,51 @@
+id,name,category,unit,shelf_life_days
+1,Sut,Asosiy oziq-ovqatlar,pachka,7
+2,Non,Go‘sht mahsulotlari,kg,3
+3,Tuxum,Asosiy oziq-ovqatlar,dona,21
+4,Shakar,Mevalar,pachka,365
+5,Choy,Go‘sht mahsulotlari,dona,730
+6,Qahva,Asosiy oziq-ovqatlar,dona,30
+7,Guruch,Shirinliklar,kg,30
+8,Go'sht,Sut mahsulotlari,litr,30
+9,Baliq,Asosiy oziq-ovqatlar,pachka,30
+10,Piyoz,Sut mahsulotlari,dona,30
+11,Kartoshka,Sabzavotlar,dona,14
+12,Sabzi,Sut mahsulotlari,litr,30
+13,Pamidor,Mevalar,kg,30
+14,Bodring,Sut mahsulotlari,pachka,30
+15,Qalampir,Ichimliklar,kg,30
+16,Yog',Go‘sht mahsulotlari,litr,30
+17,Tuz,Mevalar,pachka,30
+18,Makaron,Go‘sht mahsulotlari,dona,30
+19,Un,Sut mahsulotlari,pachka,30
+20,Shokolad,Ichimliklar,dona,30
+21,Pechenye,Mevalar,dona,30
+22,Suv,Shirinliklar,kg,30
+23,Sharbat,Asosiy oziq-ovqatlar,litr,30
+24,Sirka,Sabzavotlar,kg,30
+25,Asal,Sabzavotlar,kg,30
+26,Sosiska,Mevalar,kg,30
+27,Kolbasa,Asosiy oziq-ovqatlar,litr,30
+28,Ketchup,Shirinliklar,kg,30
+29,Mayonez,Shirinliklar,dona,30
+30,Yogurt,Mevalar,dona,30
+31,Qatiq,Shirinliklar,kg,30
+32,Pishloq,Go‘sht mahsulotlari,litr,30
+33,Smorodina,Sut mahsulotlari,dona,30
+34,Anor,Asosiy oziq-ovqatlar,pachka,30
+35,Olma,Go‘sht mahsulotlari,dona,30
+36,Nok,Sut mahsulotlari,kg,30
+37,Shaftoli,Sut mahsulotlari,pachka,30
+38,Banan,Asosiy oziq-ovqatlar,litr,30
+39,Uzum,Ichimliklar,pachka,30
+40,Qulupnay,Shirinliklar,litr,30
+41,Gilos,Sut mahsulotlari,litr,30
+42,Olcha,Asosiy oziq-ovqatlar,dona,30
+43,Ko'k choy,Go‘sht mahsulotlari,litr,30
+44,Apelsin sharbati,Go‘sht mahsulotlari,pachka,30
+45,Limon,Shirinliklar,dona,30
+46,Mandarin,Asosiy oziq-ovqatlar,kg,30
+47,Tuxum,Sabzavotlar,litr,21
+48,Kakao,Sut mahsulotlari,litr,30
+49,Qaymoq,Sut mahsulotlari,dona,30
+50,Tvorog,Shirinliklar,pachka,30

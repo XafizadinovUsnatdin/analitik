@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium - Mahsulotlar Savdosi Bashorati</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Mahsulotlar Savdosi Bashorati</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('orders') }}">Buyurtmalar</a>
+                    </li>
+                    {% if not is_premium %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('premium') }}">Premium</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ current_user.username }}
+                            {% if is_premium %}
+                            <span class="badge bg-warning text-dark">Premium</span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('logout') }}">Chiqish</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="row mb-4">
+            <div class="col-md-12 text-center">
+                <h1>Premium obuna</h1>
+                <p class="lead">Mahsulotlar Savdosi Bashorati tizimining kengaytirilgan imkoniyatlaridan foydalaning</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 border-end">
+                                <div class="p-4">
+                                    <h3 class="text-center mb-4">Bepul</h3>
+                                    <h4 class="text-center mb-4">0 so'm</h4>
+                                    <ul class="list-group list-group-flush mb-4">
+                                        <li class="list-group-item">✅ Mahsulotlar ro'yxati</li>
+                                        <li class="list-group-item">✅ Mahsulotlar holati</li>
+                                        <li class="list-group-item">✅ Asosiy bashorat ma'lumotlari</li>
+                                        <li class="list-group-item">❌ Buyurtmalarni boshqarish</li>
+                                        <li class="list-group-item">❌ Buyurtmalarni avtomatik hisoblash</li>
+                                        <li class="list-group-item">❌ Bashorat davrlarini filtrlash</li>
+                                    </ul>
+                                    <div class="text-center">
+                                        <button class="btn btn-outline-primary" disabled>Joriy tarif</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-4">
+                                    <h3 class="text-center mb-4">Premium</h3>
+                                    <h4 class="text-center mb-4">1,000,000 so'm / oy</h4>
+                                    <ul class="list-group list-group-flush mb-4">
+                                        <li class="list-group-item">✅ Mahsulotlar ro'yxati</li>
+                                        <li class="list-group-item">✅ Mahsulotlar holati</li>
+                                        <li class="list-group-item">✅ Asosiy bashorat ma'lumotlari</li>
+                                        <li class="list-group-item">✅ Buyurtmalarni boshqarish</li>
+                                        <li class="list-group-item">✅ Buyurtmalarni avtomatik hisoblash</li>
+                                        <li class="list-group-item">✅ Bashorat davrlarini filtrlash</li>
+                                    </ul>
+                                    <div class="text-center">
+                                        {% if is_premium %}
+                                            <button class="btn btn-success" disabled>Faollashtirilgan</button>
+                                        {% else %}
+                                            <form action="{{ url_for('activate_premium') }}" method="POST">
+                                                <button type="submit" class="btn btn-warning">Premium ga o'tish</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Premium imkoniyatlari</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <h3 class="card-title">Buyurtmalarni boshqarish</h3>
+                                        <p class="card-text">Buyurtmalarni yaratish, o'zgartirish va boshqarish imkoniyati</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <h3 class="card-title">Avtomatik hisoblash</h3>
+                                        <p class="card-text">Bashorat asosida buyurtmalarni avtomatik hisoblash</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <h3 class="card-title">Kengaytirilgan bashorat</h3>
+                                        <p class="card-text">Bashorat davrlarini filtrlash va batafsil ma'lumotlar</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
